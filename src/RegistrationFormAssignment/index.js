@@ -12,29 +12,70 @@ const RegistrationFormAssignment = () => {
         hobbies: []
     })
 
+    const [errors, setErrors] = useState({
+        name: "",
+        email: "",
+        bio: "",
+        country: "",
+        favourite: "",
+        subscribe: "",
+        hobbies: ""
+    })
+
+    const validateField = (name, value) => {
+        const newErrors = { ...errors };
+
+        if (name === "name" && !value.trim()) {
+            newErrors.name = "Name cannot be empty";
+        } else if (name === "email" && !value.trim()) {
+            newErrors.email = "Email cannot be empty";
+        } else if (name === "email" && !value.includes("@")) {
+            newErrors.email = "Invalid email format";
+        } else if (name === "bio" && !value.trim()) {
+            newErrors.bio = "Please enter bio";
+        } else if (name === "country" && !value) {
+            newErrors.country = "Please select country";
+        } else if (name === "favourite" && !value) {
+            newErrors.favourite = "Please choose your favourite";
+        } else if (name === "hobbies" && value.length === 0) {
+            newErrors.hobbies = "Please choose at least one hobby";
+        } else {
+            newErrors[name] = ""; // Clear the error if the field is valid
+        }
+
+        setErrors(newErrors);
+    };
+
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
 
         if (type === 'checkbox') {
             if (name === "subscribe") {
-                setFormData({ ...formData, [name]: checked })
+                setFormData({ ...formData, [name]: checked });
             } else if (name === "hobbies") {
                 const updatedHobbies = formData.hobbies.includes(value)
                     ? formData.hobbies.filter((hobby) => hobby !== value)
-                    : [...formData.hobbies, value]
-                setFormData({ ...formData, hobbies: updatedHobbies })
+                    : [...formData.hobbies, value];
+                setFormData({ ...formData, hobbies: updatedHobbies });
+
+                // Validate hobbies based on the updated array
+                validateField("hobbies", updatedHobbies);
+                return; // Exit early to avoid double validation
             }
         } else {
-            setFormData({ ...formData, [name]: value })
+            setFormData({ ...formData, [name]: value });
         }
-    }
+
+        // Validate the changed field
+        validateField(name, value);
+    };
 
     const handleFormSubmit = (e) => {
         e.preventDefault()
         console.log("Form Data Submitted: ", formData)
         alert("Form submitted successfully!")
     }
-    console.log(formData)
+    // console.log(errors)
     return (
         <form
             role="form"
@@ -62,6 +103,7 @@ const RegistrationFormAssignment = () => {
                 required
                 placeholder="Enter your name"
             />
+            {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
             <label id="email-label" htmlFor="email">
                 Email:
             </label>
@@ -78,6 +120,7 @@ const RegistrationFormAssignment = () => {
                 required
                 placeholder="Enter email"
             />
+            {errors.email && <span style={{ color: "red" }}>{errors.email}</span>}
             <span id="email-hint" style={{ fontSize: "0.8rem", color: "gray" }}>
                 We'll never share your email.
             </span>
@@ -93,6 +136,7 @@ const RegistrationFormAssignment = () => {
                 onChange={handleInputChange}
                 placeholder="Enter bio"
             />
+            {errors.bio && <span style={{ color: "red" }}>{errors.bio}</span>}
             <label id="country-label" htmlFor="country">
                 Country:
             </label>
@@ -110,6 +154,7 @@ const RegistrationFormAssignment = () => {
                 <option value="canada">Canada</option>
                 <option value="australia">Australia</option>
             </select>
+            {errors.country && <span style={{ color: "red" }}>{errors.country}</span>}
             <span id="country-hint" style={{ fontSize: "0.8rem", color: "gray" }}>
                 Select your country of residence.
             </span>
@@ -147,6 +192,7 @@ const RegistrationFormAssignment = () => {
                     Javascript
                 </label>
             </fieldset>
+            {errors.favourite && <span style={{ color: "red" }}>{errors.favourite}</span>}
             <label>Subscribe:</label>
             <input
                 aria-describedby="subscribe-hint"
@@ -155,6 +201,7 @@ const RegistrationFormAssignment = () => {
                 checked={formData.subscribe}
                 onChange={handleInputChange}
             />
+            {errors.subscribe && <span style={{ color: "red" }}>{errors.subscribe}</span>}
             <span id="subscribe-hint" style={{ fontSize: "0.8rem", color: "gray" }}>
                 Receive updates via email.
             </span>
@@ -194,6 +241,7 @@ const RegistrationFormAssignment = () => {
                     Basketball
                 </label>
             </fieldset>
+            {errors.hobbies && <span style={{ color: "red" }}>{errors.hobbies}</span>}
             <button
                 type="submit"
                 disabled={!formData.name || !formData.email}
