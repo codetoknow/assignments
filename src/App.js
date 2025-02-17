@@ -1,8 +1,12 @@
-import DisplayTextAssignment from "./DisplayTextAssignment";
+// import DisplayTextAssignment from "./DisplayTextAssignment";
+// import EmployeeDetailsAssignment from "./EmployeeDetailsAssignment";
+import RegistrationFormAssignment from "./RegistrationFormAssignment";
 
 const App = () => {
   return (
-    <DisplayTextAssignment />
+    // <DisplayTextAssignment />
+    // <EmployeeDetailsAssignment />
+    <RegistrationFormAssignment />
   );
 }
 
